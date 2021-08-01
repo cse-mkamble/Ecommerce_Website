@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="icon" href="./image/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="description" content="Ecommerce Website" />
+  <link rel="apple-touch-icon" href="./image/logo192.png" />
+  <link rel="manifest" href="./manifest.json" />
+  <title>Shopping</title>
+
+  <link rel="stylesheet" type="text/css" href="./style.css">
+</head>
+
+<body id="page-top">
+  <noscript></noscript>
+  <div class="font-light text-base text-gray-800 bg-white flex flex-col min-h-screen" id="iosapp"></div>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./service-worker.js')
+          .then((reg) => console.log('Success: ', reg.scope))
+          .catch((err) => console.log('Failure: ', err))
+      })
+    }
+  </script>
+</body>
+
+</html>
