@@ -13,7 +13,7 @@ const AdminNavber = (props) => {
 
   return (
     <Fragment>
-      <nav className="sticky z-10 flex items-center shadow-md justify-between px-4 py-4 md:px-8 top-0 w-full bg-white">
+      <nav className="sticky z-10 flex items-center shadow-md justify-between px-1 py-1 md:px-8 top-0 w-full bg-white">
         {/*  Large Screen Show  */}
         <div className="hidden lg:block lg:flex lg:items-center lg:space-x-4 mr-32">
           <span>
@@ -40,7 +40,9 @@ const AdminNavber = (props) => {
             style={{ letterSpacing: "0.70rem" }}
             className="flex items-left text-center font-bold uppercase text-gray-800 text-2xl cursor-pointer px-2 text-center"
           >
-            Hayroo
+            <div>
+              <img style={{ width: '32px', height: '32px' }} src="https://res.cloudinary.com/mayurkamble/image/upload/v1627718407/icon/cn231t4l9ifwu5ux3l6r.png" alt="shopping" />
+            </div>
           </span>
         </div>
         {/* Small Screen Show */}
@@ -65,7 +67,9 @@ const AdminNavber = (props) => {
             style={{ letterSpacing: "0.10rem" }}
             className="flex items-left text-center font-bold uppercase text-gray-800 text-2xl cursor-pointer px-2 text-center"
           >
-            Hayroo
+            <div>
+              <img style={{ width: '32px', height: '32px' }} src="https://res.cloudinary.com/mayurkamble/image/upload/v1627718407/icon/cn231t4l9ifwu5ux3l6r.png" alt="shopping" />
+            </div>
           </span>
         </div>
         {/* Both Screen show */}
