@@ -37,7 +37,9 @@ class Order {
   }
 
   async postCreateOrder(req, res) {
-    let { allProduct, user, amount, transactionId, address, phone } = req.body;
+    // let { allProduct, user, amount, transactionId, address, phone } = req.body;
+    let { allProduct, user, amount, address, phone } = req.body;
+    let transactionId = 10
     if (
       !allProduct ||
       !user ||

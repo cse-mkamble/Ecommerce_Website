@@ -5,7 +5,7 @@ import { subTotal, quantity, totalCost } from "../partials/Mixins";
 
 import { cartListProduct } from "../partials/FetchApi";
 import { getBrainTreeToken, getPaymentProcess } from "./FetchApi";
-import { fetchData, fetchbrainTree, pay } from "./Action";
+import { fetchData, fetchbrainTree, pay, order } from "./Action";
 
 import DropIn from "braintree-web-drop-in-react";
 
@@ -21,7 +21,8 @@ export const CheckoutComponent = (props) => {
     error: false,
     success: false,
     clientToken: null,
-    instance: {},
+    // instance: {},
+    instance: null,
   });
 
   useEffect(() => {
@@ -111,7 +112,7 @@ export const CheckoutComponent = (props) => {
                       placeholder="+880"
                     />
                   </div>
-                  <DropIn
+                  {/* <DropIn
                     options={{
                       authorization: state.clientToken,
                       paypal: {
@@ -136,6 +137,26 @@ export const CheckoutComponent = (props) => {
                     style={{ background: "#303031" }}
                   >
                     Pay now
+                  </div> */}
+                  <div
+                    onClick={(e) => {
+                      const address = state.address
+                      const phone = state.phone
+                      const data = { address, phone }
+                      order(
+                        data,
+                        dispatch,
+                        state,
+                        setState,
+                        totalCost,
+                        history
+                      )
+                    }
+                    }
+                    className="w-full px-4 py-2 text-center text-white font-semibold cursor-pointer"
+                    style={{ background: "#303031" }}
+                  >
+                    Order Now
                   </div>
                 </div>
               </Fragment>

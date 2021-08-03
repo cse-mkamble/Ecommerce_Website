@@ -62,7 +62,7 @@ export const pay = async (
                 allProduct: JSON.parse(localStorage.getItem("cart")),
                 user: JSON.parse(localStorage.getItem("jwt")).user._id,
                 amount: res.transaction.amount,
-                transactionId: res.transaction.id,
+                // transactionId: res.transaction.id,
                 address: state.address,
                 phone: state.phone,
               };
@@ -92,5 +92,47 @@ export const pay = async (
         console.log(error);
         setState({ ...state, error: error.message });
       });
+  }
+};
+
+export const order = async (
+  data,
+  dispatch,
+  state,
+  setState,
+  totalCost,
+  history
+) => {
+  // console.log(data)
+  let amountTotal = totalCost()
+  // console.log(amountTotal)
+  if (!data.address) {
+    setState({ ...state, error: "Please provide your address" });
+  } else if (!data.phone) {
+    setState({ ...state, error: "Please provide your phone number" });
+  } else {
+    let orderData = {
+      allProduct: JSON.parse(localStorage.getItem("cart")),
+      user: JSON.parse(localStorage.getItem("jwt")).user._id,
+      amount: amountTotal,
+      address: data.address,
+      phone: data.phone,
+    };
+    try {
+      let resposeData = await createOrder(orderData);
+      if (resposeData.success) {
+        localStorage.setItem("cart", JSON.stringify([]));
+        dispatch({ type: "cartProduct", payload: null });
+        dispatch({ type: "cartTotalCost", payload: null });
+        dispatch({ type: "orderSuccess", payload: true });
+        setState({ clientToken: "", instance: {} });
+        dispatch({ type: "loading", payload: false });
+        return history.push("/");
+      } else if (resposeData.error) {
+        console.log(resposeData.error);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
 };
