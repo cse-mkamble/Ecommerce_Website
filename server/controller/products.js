@@ -245,7 +245,7 @@ class Product {
 
   async getWishProduct(req, res) {
     let { productArray } = req.body;
-    if (productArray.length === 0) {
+    if (!productArray) {
       return res.json({ error: "All filled must be required" });
     } else {
       try {
@@ -263,7 +263,7 @@ class Product {
 
   async getCartProduct(req, res) {
     let { productArray } = req.body;
-    if (productArray.length === 0) {
+    if (!productArray) {
       return res.json({ error: "All filled must be required" });
     } else {
       try {
