@@ -28,82 +28,6 @@ class Auth {
     }
   }
 
-  // /* User Registration/Signup controller  */
-  // async postSignup(req, res) {
-  //   let { name, email, password, cPassword } = req.body;
-  //   let error = {};
-  //   if (!name || !email || !password || !cPassword) {
-  //     error = {
-  //       ...error,
-  //       name: "Filed must not be empty",
-  //       email: "Filed must not be empty",
-  //       password: "Filed must not be empty",
-  //       cPassword: "Filed must not be empty",
-  //     };
-  //     return res.json({ error });
-  //   }
-  //   if (name.length < 3 || name.length > 25) {
-  //     error = { ...error, name: "Name must be 3-25 charecter" };
-  //     return res.json({ error });
-  //   } else {
-  //     if (validateEmail(email)) {
-  //       name = toTitleCase(name);
-  //       if ((password.length > 255) | (password.length < 8)) {
-  //         error = {
-  //           ...error,
-  //           password: "Password must be 8 charecter",
-  //           name: "",
-  //           email: "",
-  //         };
-  //         return res.json({ error });
-  //       } else {
-  //         // If Email & Number exists in Database then:
-  //         try {
-  //           password = bcrypt.hashSync(password, 10);
-  //           const data = await userModel.findOne({ email: email });
-  //           if (data) {
-  //             error = {
-  //               ...error,
-  //               password: "",
-  //               name: "",
-  //               email: "Email already exists",
-  //             };
-  //             return res.json({ error });
-  //           } else {
-  //             let newUser = new userModel({
-  //               name,
-  //               email,
-  //               password,
-  //               // ========= Here role 1 for admin signup role 0 for customer signup =========
-  //               userRole: 0, // Field Name change to userRole from role
-  //             });
-  //             newUser
-  //               .save()
-  //               .then((data) => {
-  //                 return res.json({
-  //                   success: "Account create successfully. Please login",
-  //                 });
-  //               })
-  //               .catch((err) => {
-  //                 console.log(err);
-  //               });
-  //           }
-  //         } catch (err) {
-  //           console.log(err);
-  //         }
-  //       }
-  //     } else {
-  //       error = {
-  //         ...error,
-  //         password: "",
-  //         name: "",
-  //         email: "Email is not valid",
-  //       };
-  //       return res.json({ error });
-  //     }
-  //   }
-  // }
-
   /* User Registration/Signup controller  */
   async register(req, res) {
     try {
@@ -174,9 +98,12 @@ class Auth {
       newUser
         .save()
         .then((data) => {
+          const token = jwt.sign({ _id: data._id, role: data.userRole }, JWT_SECRET)
+          const encode = jwt.verify(token, JWT_SECRET)
           return res.json({
-            success: "Account create successfully. Please login",
-          });
+            token: token,
+            user: encode
+          })
         })
         .catch((err) => {
           console.log(err);
@@ -185,29 +112,6 @@ class Auth {
       return res.status(500).json({ msg: err.message })
     }
   }
-
-  //   activateEmail: async (req, res) => {
-  //     try {
-  //         const { activation_token } = req.body
-  //         const user = jwt.verify(activation_token, process.env.ACTIVATION_TOKEN_SECRET)
-  //         if(!user) return res.status(400).json({ msg: "This user not exists." })
-  //         const { fullname, username, email, password, gender } = user
-  //         const newUser = new Users({ fullname, username, email, password, gender })
-  //         const access_token = createAccessToken({id: newUser._id})
-  //         const refresh_token = createRefreshToken({id: newUser._id})
-  //         res.cookie('refreshtoken', refresh_token, {
-  //             httpOnly: true,
-  //             path: '/api/refresh_token',
-  //             maxAge: 30*24*60*60*1000 // 30days
-  //         })
-  //         await newUser.save()
-  //         res.json({ msg: 'Register Success!', access_token, user: { ...newUser._doc, password: '' } })
-  //     } catch (err) {
-  //         return res.status(500).json({ msg: err.message })
-  //     }
-  // }
-
-
 
   /* User Login/Signin controller  */
   async postSignin(req, res) {

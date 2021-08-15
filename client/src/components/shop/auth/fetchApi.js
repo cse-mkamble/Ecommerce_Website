@@ -29,7 +29,7 @@ export const signupReq = async ({ name, email, password, cPassword }) => {
   }
 };
 
-export const activationEmail  = async (activation_token) => {
+export const activationEmailReq  = async (activation_token) => {
   try {
     let res = await axios.post(`${apiURL}/api/activation`, { activation_token});
     return res.data;
