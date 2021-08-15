@@ -147,7 +147,7 @@ class Auth {
             const url = `${CLIENT_URL}/user/activation/${activation_token}`
             const subject = 'Confirm your email address'
             const message = activationTokenMail(name, url, CONTACT_US)
-            sendMail( email, subject, message )
+            sendMail(email, subject, message)
             res.json({ success: "Please activate your email to start." })
           }
         } catch (err) {
@@ -158,6 +158,54 @@ class Auth {
       return res.status(500).json({ msg: err.message })
     }
   }
+
+  async activateEmail(req, res) {
+    try {
+      const { activation_token } = req.body
+      const user = jwt.verify(activation_token, process.env.ACTIVATION_TOKEN_SECRET)
+      if (!user) return res.status(400).json({ msg: "This user not exists." })
+      const { name, email, password, userRole } = user
+      let newUser = new userModel({
+        name,
+        email,
+        password,
+        userRole,
+      });
+      newUser
+        .save()
+        .then((data) => {
+          return res.json({
+            success: "Account create successfully. Please login",
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } catch (err) {
+      return res.status(500).json({ msg: err.message })
+    }
+  }
+
+  //   activateEmail: async (req, res) => {
+  //     try {
+  //         const { activation_token } = req.body
+  //         const user = jwt.verify(activation_token, process.env.ACTIVATION_TOKEN_SECRET)
+  //         if(!user) return res.status(400).json({ msg: "This user not exists." })
+  //         const { fullname, username, email, password, gender } = user
+  //         const newUser = new Users({ fullname, username, email, password, gender })
+  //         const access_token = createAccessToken({id: newUser._id})
+  //         const refresh_token = createRefreshToken({id: newUser._id})
+  //         res.cookie('refreshtoken', refresh_token, {
+  //             httpOnly: true,
+  //             path: '/api/refresh_token',
+  //             maxAge: 30*24*60*60*1000 // 30days
+  //         })
+  //         await newUser.save()
+  //         res.json({ msg: 'Register Success!', access_token, user: { ...newUser._doc, password: '' } })
+  //     } catch (err) {
+  //         return res.status(500).json({ msg: err.message })
+  //     }
+  // }
 
 
 

@@ -28,3 +28,12 @@ export const signupReq = async ({ name, email, password, cPassword }) => {
     console.log(error);
   }
 };
+
+export const activationEmail  = async (activation_token) => {
+  try {
+    let res = await axios.post(`${apiURL}/api/activation`, { activation_token});
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
