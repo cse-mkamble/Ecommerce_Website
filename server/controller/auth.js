@@ -3,7 +3,9 @@ const bcrypt = require("bcryptjs");
 const userModel = require("../models/users");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../config/keys");
-const activationTokenMail = require("../utils/activationTokenMail");
+const activationTokenMail = require("../utils/activationTokenMail.js");
+const forgotPassMail = require("../utils/forgotPassMail.js")
+const resetPassMail = require("../utils/resetPassMail.js")
 const sendMail = require("../utils/sendMail");
 
 const { CLIENT_URL, CONTACT_US } = process.env
@@ -106,7 +108,7 @@ class Auth {
           })
         })
         .catch((err) => {
-          console.log(err);
+          return res.json({ error: "Alread exit your email!" })
         });
     } catch (err) {
       return res.status(500).json({ msg: err.message })
@@ -149,6 +151,53 @@ class Auth {
       console.log(err);
     }
   }
+
+  /* User ForgotPassword controller  */
+  async forgotPassword(req, res) {
+    let { email } = req.body;
+    if (!email) {
+      return res.json({
+        error: "Fields must not be empty",
+      });
+    }
+    try {
+      const data = await userModel.findOne({ email: email })
+      if (!data) {
+        return res.json({
+          error: "Invalid email!",
+        });
+      } else {
+        const access_token = createAccessToken({ id: data._id, email })
+        const url = `${CLIENT_URL}/user/reset/${access_token}`
+        const subject = 'Reset Your Password'
+        const message = forgotPassMail(url, CONTACT_US)
+        sendMail(email, subject, message)
+        res.json({ success: "Re-send the password, please check your email." })
+      }
+    } catch (err) {
+      res.json({ error: err.message })
+    }
+  }
+
+  /* User ResetPassword controller  */
+  async resetPassword(req, res) {
+    try {
+      const { password } = req.body
+      const passwordHash = await bcrypt.hash(password, 10)
+      await userModel.findOneAndUpdate(
+        { _id: req.user.id },
+        { password: passwordHash }
+      )
+      const url = `${CLIENT_URL}/`
+      const subject = 'Reset Your Password'
+      const message = resetPassMail(url)
+      sendMail(req.user.email, subject, message)
+      res.json({ success: "Your password has been reset successfully. Please Check Email..." })
+    } catch (err) {
+      res.json({ error: err.message })
+    }
+  }
+
 }
 
 
@@ -156,7 +205,9 @@ const createActivationToken = (payload) => {
   return jwt.sign(payload, process.env.ACTIVATION_TOKEN_SECRET, { expiresIn: '10m' })
 }
 
-
+const createAccessToken = (payload) => {
+  return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '10m' })
+}
 
 
 const authController = new Auth();

@@ -16,6 +16,8 @@ import { UserProfile, UserOrders, SettingUser } from "./shop/dashboardUser";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 import ActivationEmail from "./shop/auth/ActivationEmail";
+import ForgotPass from "./shop/auth/ForgotPassword";
+import ResetPass from "./shop/auth/ResetPassword";
 
 /* Routing All page will be here */
 const Routes = (props) => {
@@ -25,6 +27,9 @@ const Routes = (props) => {
         {/* Shop & Public Routes */}
         <Route exact path="/" component={Home} />
         <Route exact path="/user/activation/:activation_token" component={ActivationEmail} />
+        <Route exact path="/forgot_password" component={ForgotPass} />
+        <Route exact path="/user/reset/:access_token" component={ResetPass} />
+
         <Route exact path="/wish-list" component={WishList} />
         <Route exact path="/products/:id" component={ProductDetails} />
         <Route

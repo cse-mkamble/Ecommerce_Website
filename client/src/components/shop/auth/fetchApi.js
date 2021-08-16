@@ -29,9 +29,29 @@ export const signupReq = async ({ name, email, password, cPassword }) => {
   }
 };
 
-export const activationEmailReq  = async (activation_token) => {
+export const activationEmailReq = async (activation_token) => {
   try {
-    let res = await axios.post(`${apiURL}/api/activation`, { activation_token});
+    let res = await axios.post(`${apiURL}/api/activation`, { activation_token });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const forgotPassReq = async (email) => {
+  try {
+    let res = await axios.post(`${apiURL}/api/forgot`, { email });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const resetPassReq = async (password, access_token) => {
+  try {
+    let res = await axios.post(`${apiURL}/api/reset`, { password }, {
+      headers: { Authorization: access_token }
+    });
     return res.data;
   } catch (error) {
     console.log(error);

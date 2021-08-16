@@ -99,7 +99,7 @@ const Login = (props) => {
               Remember me<span className="text-sm text-gray-600">*</span>
             </label>
           </div>
-          <a className="block text-gray-600" href="/">
+          <a className="block text-gray-600" href="/forgot_password">
             Lost your password?
           </a>
         </div>
