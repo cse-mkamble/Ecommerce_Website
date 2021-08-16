@@ -110,9 +110,8 @@ const ProductDetailsSection = (props) => {
               onClick={(e) =>
                 slideImage("increase", 0, count, setCount, pImages)
               }
-              className={`${
-                count === 0 ? "" : "opacity-25"
-              } cursor-pointer w-20 h-20 object-cover object-center`}
+              className={`${count === 0 ? "" : "opacity-25"
+                } cursor-pointer w-20 h-20 object-cover object-center`}
               src={`${apiURL}/uploads/products/${sProduct.pImages[0]}`}
               alt="pic"
             />
@@ -120,55 +119,60 @@ const ProductDetailsSection = (props) => {
               onClick={(e) =>
                 slideImage("increase", 1, count, setCount, pImages)
               }
-              className={`${
-                count === 1 ? "" : "opacity-25"
-              } cursor-pointer w-20 h-20 object-cover object-center`}
+              className={`${count === 1 ? "" : "opacity-25"
+                } cursor-pointer w-20 h-20 object-cover object-center`}
               src={`${apiURL}/uploads/products/${sProduct.pImages[1]}`}
               alt="pic"
             />
           </div>
           <div className="col-span-2 md:col-span-7">
-            <div className="relative">
-              <img
-                className="w-full"
-                src={`${apiURL}/uploads/products/${sProduct.pImages[count]}`}
-                alt="Pic"
-              />
-              <div className="absolute inset-0 flex justify-between items-center mb-4">
-                <svg
-                  onClick={(e) =>
-                    slideImage("increase", null, count, setCount, pImages)
-                  }
-                  className="flex justify-center  w-12 h-12 text-gray-700 opacity-25 cursor-pointer hover:text-yellow-700 hover:opacity-100"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 19l-7-7 7-7"
+            <div>
+              <div className="relative">
+                <div style={{}}>
+                  <img
+                    className="w-full"
+                    src={`${apiURL}/uploads/products/${sProduct.pImages[count]}`}
+                    alt="Pic"
                   />
-                </svg>
-                <svg
-                  onClick={(e) =>
-                    slideImage("increase", null, count, setCount, pImages)
-                  }
-                  className="flex justify-center  w-12 h-12 text-gray-700 opacity-25 cursor-pointer hover:text-yellow-700 hover:opacity-100"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
+                </div>
+                <div className="absolute inset-0 flex justify-between items-center mb-4">
+                  <svg
+                    onClick={(e) =>
+                      slideImage("increase", null, count, setCount, pImages)
+                    }
+                    className="flex justify-center  w-12 h-12 text-gray-700 cursor-pointer hover:text-yellow-700 hover:opacity-100"
+                    style={{ color: '#9e9e9e' }}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 19l-7-7 7-7"
+                    />
+                  </svg>
+                  <svg
+                    onClick={(e) =>
+                      slideImage("increase", null, count, setCount, pImages)
+                    }
+                    className="flex justify-center  w-12 h-12 text-gray-700 cursor-pointer hover:text-yellow-700 hover:opacity-100"
+                    style={{ color: '#9e9e9e' }}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </div>
               </div>
             </div>
           </div>
@@ -182,9 +186,8 @@ const ProductDetailsSection = (props) => {
                 <span>
                   <svg
                     onClick={(e) => isWishReq(e, sProduct._id, setWlist)}
-                    className={`${
-                      isWish(sProduct._id, wList) && "hidden"
-                    } w-5 h-5 md:w-6 md:h-6 cursor-pointer text-yellow-700`}
+                    className={`${isWish(sProduct._id, wList) && "hidden"
+                      } w-5 h-5 md:w-6 md:h-6 cursor-pointer text-yellow-700`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -199,9 +202,8 @@ const ProductDetailsSection = (props) => {
                   </svg>
                   <svg
                     onClick={(e) => unWishReq(e, sProduct._id, setWlist)}
-                    className={`${
-                      !isWish(sProduct._id, wList) && "hidden"
-                    } w-5 h-5 md:w-6 md:h-6 cursor-pointer text-yellow-700`}
+                    className={`${!isWish(sProduct._id, wList) && "hidden"
+                      } w-5 h-5 md:w-6 md:h-6 cursor-pointer text-yellow-700`}
                     fill="currentColor"
                     viewBox="0 0 20 20"
                     xmlns="http://www.w3.org/2000/svg"
@@ -225,14 +227,12 @@ const ProductDetailsSection = (props) => {
                 ""
               )}
               <div
-                className={`flex justify-between items-center px-4 py-2 border ${
-                  quantitiy === sProduct.pQuantity && "border-red-500"
-                }`}
+                className={`flex justify-between items-center px-4 py-2 border ${quantitiy === sProduct.pQuantity && "border-red-500"
+                  }`}
               >
                 <div
-                  className={`${
-                    quantitiy === sProduct.pQuantity && "text-red-500"
-                  }`}
+                  className={`${quantitiy === sProduct.pQuantity && "text-red-500"
+                    }`}
                 >
                   Quantity
                 </div>
@@ -240,8 +240,8 @@ const ProductDetailsSection = (props) => {
                 {sProduct.pQuantity !== 0 ? (
                   <Fragment>
                     {layoutData.inCart == null ||
-                    (layoutData.inCart !== null &&
-                      layoutData.inCart.includes(sProduct._id) === false) ? (
+                      (layoutData.inCart !== null &&
+                        layoutData.inCart.includes(sProduct._id) === false) ? (
                       <div className="flex items-center space-x-2">
                         <span
                           onClick={(e) =>
@@ -366,7 +366,7 @@ const ProductDetailsSection = (props) => {
               {sProduct.pQuantity !== 0 ? (
                 <Fragment>
                   {layoutData.inCart !== null &&
-                  layoutData.inCart.includes(sProduct._id) === true ? (
+                    layoutData.inCart.includes(sProduct._id) === true ? (
                     <div
                       style={{ background: "#303031" }}
                       className={`px-4 py-2 text-white text-center cursor-not-allowed uppercase opacity-75`}
@@ -397,7 +397,7 @@ const ProductDetailsSection = (props) => {
               ) : (
                 <Fragment>
                   {layoutData.inCart !== null &&
-                  layoutData.inCart.includes(sProduct._id) === true ? (
+                    layoutData.inCart.includes(sProduct._id) === true ? (
                     <div
                       style={{ background: "#303031" }}
                       className={`px-4 py-2 text-white text-center cursor-not-allowed uppercase opacity-75`}
