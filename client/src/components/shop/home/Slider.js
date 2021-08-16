@@ -9,6 +9,17 @@ const apiURL = process.env.REACT_APP_API_URL;
 const Slider = (props) => {
   const { data, dispatch } = useContext(HomeContext);
   const [slide, setSlide] = useState(0);
+  let totImg = data.sliderImages.length
+  
+  function changeImg() {
+    if (slide === totImg - 1) {
+      setSlide(0);
+    } else if (slide < totImg) {
+      setSlide(slide + 1);
+    }
+  }
+
+  setTimeout(changeImg, 5000)
 
   useEffect(() => {
     sliderImages(dispatch);
@@ -27,7 +38,7 @@ const Slider = (props) => {
           ) : (
             ""
           )}
-          <div>
+          {/* <div>
             <svg
               onClick={(e) => prevSlide(data.sliderImages.length, slide, setSlide)}
               className={`z-10 absolute top-0 left-0  flex justify-end items-center box-border flex justify-center w-12 h-12 text-gray-700  cursor-pointer hover:text-yellow-700`}
@@ -60,7 +71,7 @@ const Slider = (props) => {
                 d="M9 5l7 7-7 7"
               />
             </svg>
-          </div>
+          </div> */}
         </div>
         {/* <div className="absolute inset-0 flex items-center justify-center">
           <a
