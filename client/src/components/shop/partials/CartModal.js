@@ -55,15 +55,13 @@ const CartModal = (props) => {
     <Fragment>
       {/* Black Overlay */}
       <div
-        className={`${
-          !data.cartModal ? "hidden" : ""
-        } fixed top-0 z-30 w-full h-full bg-black opacity-50`}
+        className={`${!data.cartModal ? "hidden" : ""
+          } fixed top-0 z-30 w-full h-full bg-black opacity-50`}
       />
       {/* Cart Modal Start */}
       <section
-        className={`${
-          !data.cartModal ? "hidden" : ""
-        } fixed z-40 inset-0 flex items-start justify-end`}
+        className={`${!data.cartModal ? "hidden" : ""
+          } fixed z-40 inset-0 flex items-start justify-end`}
       >
         <div
           style={{ background: "#303031" }}
@@ -120,7 +118,7 @@ const CartModal = (props) => {
                               <span className="text-sm text-gray-400">
                                 Subtotoal :
                               </span>{" "}
-                              ${subTotal(item._id, item.pPrice)}.00
+                              ₹{subTotal(item._id, item.pPrice)}.00
                             </div>{" "}
                             {/* SUbtotal Count */}
                           </div>
@@ -173,7 +171,7 @@ const CartModal = (props) => {
                       cartModalOpen();
                     }}
                   >
-                    Checkout ${data.cartTotalCost}.00
+                    Checkout ₹{data.cartTotalCost}.00
                   </div>
                 ) : (
                   <div
@@ -191,7 +189,7 @@ const CartModal = (props) => {
                       });
                     }}
                   >
-                    Checkout ${data.cartTotalCost}.00
+                    Checkout ₹{data.cartTotalCost}.00
                   </div>
                 )}
               </Fragment>

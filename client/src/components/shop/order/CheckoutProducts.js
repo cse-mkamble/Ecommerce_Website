@@ -56,7 +56,7 @@ export const CheckoutComponent = (props) => {
       <section className="mx-4 mt-20 md:mx-12 md:mt-32 lg:mt-24">
         <div className="text-2xl mx-2">Order</div>
         {/* Product List */}
-        <div className="flex flex-col md:flex md:space-x-2 md:flex-row">
+        <div className="flex flex-col md:flex md:space-x-2 ">
           <div className="md:w-1/2">
             <CheckoutProducts products={data.cartProduct} />
           </div>
@@ -209,13 +209,13 @@ const CheckoutProducts = ({ products }) => {
                     {product.pName}
                   </div>
                   <div className="md:ml-6 font-semibold text-gray-600 text-sm">
-                    Price : ${product.pPrice}.00{" "}
+                    Price : ₹{product.pPrice}.00{" "}
                   </div>
                   <div className="md:ml-6 font-semibold text-gray-600 text-sm">
                     Quantitiy : {quantity(product._id)}
                   </div>
                   <div className="font-semibold text-gray-600 text-sm">
-                    Subtotal : ${subTotal(product._id, product.pPrice)}.00
+                    Subtotal : ₹{subTotal(product._id, product.pPrice)}.00
                   </div>
                 </div>
               </div>
