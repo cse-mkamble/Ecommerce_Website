@@ -10,7 +10,7 @@ const Slider = (props) => {
   const { data, dispatch } = useContext(HomeContext);
   const [slide, setSlide] = useState(0);
   let totImg = data.sliderImages.length
-  
+
   function changeImg() {
     if (slide === totImg - 1) {
       setSlide(0);
@@ -32,7 +32,7 @@ const Slider = (props) => {
           {data.sliderImages.length > 0 ? (
             <img
               className="w-full"
-              src={`${apiURL}/uploads/customize/${data.sliderImages[slide].slideImage}`}
+              src={`${data.sliderImages[slide].slideImage}`}
               alt="sliderImage"
             />
           ) : (

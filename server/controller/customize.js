@@ -4,6 +4,7 @@ const productModel = require("../models/products");
 const orderModel = require("../models/orders");
 const userModel = require("../models/users");
 const customizeModel = require("../models/customize");
+const cloudinary = require("../utils/cloudinary");
 
 class Customize {
   async getImages(req, res) {
@@ -18,13 +19,22 @@ class Customize {
   }
 
   async uploadSlideImage(req, res) {
+
     let image = req.file.filename;
+
     if (!image) {
       return res.json({ error: "All field required" });
     }
+
     try {
+
+      // Upload image to cloudinary
+      const result = await cloudinary.uploader.upload(req.file.path);
+
+
       let newCustomzie = new customizeModel({
-        slideImage: image,
+        slideImage: result.secure_url,
+        cloudinary_id: result.public_id,
       });
       let save = await newCustomzie.save();
       if (save) {
@@ -42,18 +52,23 @@ class Customize {
     } else {
       try {
         let deletedSlideImage = await customizeModel.findById(id);
-        const filePath = `../server/public/uploads/customize/${deletedSlideImage.slideImage}`;
+        // const filePath = `../server/public/uploads/customize/${deletedSlideImage.slideImage}`;
 
-        let deleteImage = await customizeModel.findByIdAndDelete(id);
-        if (deleteImage) {
-          // Delete Image from uploads -> customizes folder
-          fs.unlink(filePath, (err) => {
-            if (err) {
-              console.log(err);
-            }
-            return res.json({ success: "Image deleted successfully" });
-          });
-        }
+        await cloudinary.uploader.destroy(deletedSlideImage.cloudinary_id);
+
+        // let deleteImage = await customizeModel.findByIdAndDelete(id);
+        await deletedSlideImage.remove();
+        return res.json({ success: "Image deleted successfully" });
+
+        // if (deleteImage) {
+        //   // Delete Image from uploads -> customizes folder
+        //   fs.unlink(filePath, (err) => {
+        //     if (err) {
+        //       console.log(err);
+        //     }
+        //     return res.json({ success: "Image deleted successfully" });
+        //   });
+        // }
       } catch (err) {
         console.log(err);
       }

@@ -5,6 +5,9 @@ const customizeSchema = new mongoose.Schema(
     slideImage: {
       type: String,
     },
+    cloudinary_id: {
+      type: String,
+    },
     firstShow: {
       type: Number,
       default: 0,
