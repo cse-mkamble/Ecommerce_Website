@@ -52,7 +52,12 @@ export const createProduct = async ({
 };
 
 export const editProduct = async (product) => {
-  console.log(product);
+  let allOldImages = [];
+  // console.log(product.pImages);
+  for (let i in product.pImages) {
+    // console.log(product.pImages[i].cloudinary_id);
+    allOldImages.push(product.pImages[i].cloudinary_id)
+  }
   /* Most important part for updating multiple image  */
   let formData = new FormData();
   if (product.pEditImages) {
@@ -69,7 +74,7 @@ export const editProduct = async (product) => {
   formData.append("pQuantity", product.pQuantity);
   formData.append("pPrice", product.pPrice);
   formData.append("pOffer", product.pOffer);
-  formData.append("pImages", product.pImages);
+  formData.append("pImages", allOldImages );
 
   try {
     let res = await axios.post(`${apiURL}/api/product/edit-product`, formData);

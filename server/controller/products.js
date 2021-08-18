@@ -1,6 +1,7 @@
 const productModel = require("../models/products");
 const fs = require("fs");
 const path = require("path");
+const cloudinary = require("../utils/cloudinary");
 
 class Product {
   // Delete Image from uploads -> products folder
@@ -17,7 +18,7 @@ class Product {
       console.log(filePath);
       if (fs.existsSync(filePath)) {
         console.log("Exists image");
-    }
+      }
       fs.unlink(filePath, (err) => {
         if (err) {
           return err;
@@ -42,54 +43,36 @@ class Product {
 
   async postAddProduct(req, res) {
     let {
-      pName,
-      pDescription,
-      pPrice,
-      pQuantity,
-      pCategory,
-      pOffer,
-      pStatus,
+      pName, pDescription, pPrice, pQuantity, pCategory, pOffer, pStatus,
     } = req.body;
     let images = req.files;
     // Validation
     if (
-      !pName |
-      !pDescription |
-      !pPrice |
-      !pQuantity |
-      !pCategory |
-      !pOffer |
-      !pStatus
+      !pName | !pDescription | !pPrice | !pQuantity | !pCategory | !pOffer | !pStatus
     ) {
-      Product.deleteImages(images, 'file');
+      // Product.deleteImages(images, 'file');
       return res.json({ error: "All filled must be required" });
     }
     // Validate Name and description
     else if (pName.length > 255 || pDescription.length > 3000) {
-      Product.deleteImages(images, 'file');
+      // Product.deleteImages(images, 'file');
       return res.json({
         error: "Name 255 & Description must not be 3000 charecter long",
       });
     }
     // Validate Images
     else if (images.length !== 2) {
-      Product.deleteImages(images, 'file');
+      // Product.deleteImages(images, 'file');
       return res.json({ error: "Must need to provide 2 images" });
     } else {
       try {
         let allImages = [];
-        for (const img of images) {
-          allImages.push(img.filename);
+        for (const file of req.files) {
+          const result = await cloudinary.uploader.upload(file.path);
+          allImages.push({ cloudinary_id: result.public_id, url: result.secure_url })
         }
         let newProduct = new productModel({
-          pImages: allImages,
-          pName,
-          pDescription,
-          pPrice,
-          pQuantity,
-          pCategory,
-          pOffer,
-          pStatus,
+          pImages: allImages, pName, pDescription, pPrice, pQuantity, pCategory, pOffer, pStatus,
         });
         let save = await newProduct.save();
         if (save) {
@@ -102,30 +85,19 @@ class Product {
   }
 
   async postEditProduct(req, res) {
+    // console.log(req.body)
+    // console.log(req.body.pImages)
+    // await cloudinary.uploader.destroy(deletedSlideImage.cloudinary_id);
+    // Product.deleteImages2(req.body.pImages.split(','), 'string');
+    // console.log(JSON.stringify(req.body.pImages.toString()));  
+
     let {
-      pId,
-      pName,
-      pDescription,
-      pPrice,
-      pQuantity,
-      pCategory,
-      pOffer,
-      pStatus,
-      pImages,
+      pId, pName, pDescription, pPrice, pQuantity, pCategory, pOffer, pStatus, pImages,
     } = req.body;
     let editImages = req.files;
 
     // Validate other fileds
-    if (
-      !pId |
-      !pName |
-      !pDescription |
-      !pPrice |
-      !pQuantity |
-      !pCategory |
-      !pOffer |
-      !pStatus
-    ) {
+    if (!pId | !pName | !pDescription | !pPrice | !pQuantity | !pCategory | !pOffer | !pStatus) {
       return res.json({ error: "All filled must be required" });
     }
     // Validate Name and description
@@ -133,28 +105,32 @@ class Product {
       return res.json({
         error: "Name 255 & Description must not be 3000 charecter long",
       });
-    } 
+    }
     // Validate Update Images
     else if (editImages && editImages.length == 1) {
       Product.deleteImages(editImages, 'file');
       return res.json({ error: "Must need to provide 2 images" });
     } else {
       let editData = {
-        pName,
-        pDescription,
-        pPrice,
-        pQuantity,
-        pCategory,
-        pOffer,
-        pStatus,
+        pName, pDescription, pPrice, pQuantity, pCategory, pOffer, pStatus,
       }
       if (editImages.length == 2) {
+
         let allEditImages = [];
-        for (const img of editImages) {
-          allEditImages.push(img.filename);
+        for (const file of req.files) {
+          const result = await cloudinary.uploader.upload(file.path);
+          allEditImages.push({ cloudinary_id: result.public_id, url: result.secure_url })
         }
-        editData = {...editData, pImages: allEditImages};
-        Product.deleteImages(pImages.split(','), 'string');
+
+        editData = { ...editData, pImages: allEditImages };
+
+        // Product.deleteImages(pImages.split(','), 'string');
+
+        // Delete Old pImages
+        for (const pImg of pImages.split(',')) {
+          await cloudinary.uploader.destroy(pImg)
+        }
+
       }
       try {
         let editProduct = productModel.findByIdAndUpdate(pId, editData);
@@ -176,9 +152,15 @@ class Product {
       try {
         let deleteProductObj = await productModel.findById(pId);
         let deleteProduct = await productModel.findByIdAndDelete(pId);
+
         if (deleteProduct) {
-          // Delete Image from uploads -> products folder
-          Product.deleteImages(deleteProductObj.pImages, 'string');
+          var keys = Object.keys(deleteProductObj.pImages);
+          for (var i = 0; i < keys.length; i++) {
+            var value = deleteProductObj.pImages[i];
+            // console.log(value.cloudinary_id)
+            await cloudinary.uploader.destroy(value.cloudinary_id)
+          }
+
           return res.json({ success: "Product deleted successfully" });
         }
       } catch (err) {
