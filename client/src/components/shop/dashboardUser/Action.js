@@ -3,6 +3,7 @@ import {
   updatePersonalInformationFetch,
   getOrderByUser,
   updatePassword,
+  editCategory
 } from "./FetchApi";
 
 export const logout = () => {
@@ -110,5 +111,14 @@ export const handleChangePassword = async (fData, setFdata, dispatch) => {
     } catch (error) {
       console.log(error);
     }
+  }
+};
+
+export const editOrderReq = async (oId, dispatch) => {
+  // console.log(oId)
+  let responseData = await editCategory(oId, "Cancelled")
+  console.log(responseData);
+  if (responseData && responseData.success) {
+    fetchOrderByUser(dispatch);
   }
 };

@@ -3,7 +3,7 @@ import moment from "moment";
 
 import Layout from "./Layout";
 import { DashboardUserContext } from "./Layout";
-import { fetchOrderByUser } from "./Action";
+import { fetchOrderByUser, editOrderReq } from "./Action";
 
 const apiURL = process.env.REACT_APP_API_URL;
 
@@ -20,13 +20,14 @@ const TableHeader = () => {
           <th className="px-4 py-2 border">Transaction Id</th>
           <th className="px-4 py-2 border">Checkout</th>
           <th className="px-4 py-2 border">Processing</th>
+          <th className="px-4 py-2 border">Action</th>
         </tr>
       </thead>
     </Fragment>
   );
 };
 
-const TableBody = ({ order }) => {
+const TableBody = ({ order, dispatch }) => {
   return (
     <Fragment>
       <tr className="border-b">
@@ -86,6 +87,17 @@ const TableBody = ({ order }) => {
         <td className="hover:bg-gray-200 p-2 text-center">
           {moment(order.updatedAt).format("lll")}
         </td>
+        <td>
+          {
+            order.status !== "Delivered" && order.status !== "Cancelled" ?
+              <div className="p-2 flex items-center justify-center">
+                <span
+                  onClick={(e) => editOrderReq(order._id, dispatch)}
+                  className="cursor-pointer hover:bg-gray-200 rounded-lg p-2 mx-1"
+                  style={{ color: 'red' }}>Cancel</span>
+              </div> : ""
+          }
+        </td>
       </tr>
     </Fragment>
   );
@@ -133,7 +145,7 @@ const OrdersComponent = () => {
               <tbody>
                 {orders && orders.length > 0 ? (
                   orders.map((item, i) => {
-                    return <TableBody key={i} order={item} />;
+                    return <TableBody key={i} order={item} dispatch={dispatch} />;
                   })
                 ) : (
                   <tr>
