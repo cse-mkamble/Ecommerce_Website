@@ -3,9 +3,9 @@ const bcrypt = require("bcryptjs");
 const userModel = require("../models/users");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../config/keys");
-const activationTokenMail = require("../utils/activationTokenMail.js");
-const forgotPassMail = require("../utils/forgotPassMail.js")
-const resetPassMail = require("../utils/resetPassMail.js")
+const activationTokenMail = require("../utils/mail/activationTokenMail.js");
+const forgotPassMail = require("../utils/mail/forgotPassMail.js")
+const resetPassMail = require("../utils/mail/resetPassMail.js")
 const sendMail = require("../utils/sendMail");
 
 const { CLIENT_URL, CONTACT_US } = process.env
@@ -71,9 +71,10 @@ class Auth {
             }
             const activation_token = createActivationToken(newUser)
             const url = `${CLIENT_URL}/user/activation/${activation_token}`
-            const subject = 'Confirm your email address'
+            const subjectMail = 'Confirm your email address'
             const message = activationTokenMail(name, url, CONTACT_US)
-            sendMail(email, subject, message)
+            sendMail({ to: email, subject: subjectMail, text: message })
+
             res.json({ success: "Please activate your email to start." })
           }
         } catch (err) {
@@ -169,9 +170,10 @@ class Auth {
       } else {
         const access_token = createAccessToken({ id: data._id, email })
         const url = `${CLIENT_URL}/user/reset/${access_token}`
-        const subject = 'Reset Your Password'
+        const subjectMail = 'Reset Your Password'
         const message = forgotPassMail(url, CONTACT_US)
-        sendMail(email, subject, message)
+        sendMail({ to: email, subject: subjectMail, text: message })
+
         res.json({ success: "Re-send the password, please check your email." })
       }
     } catch (err) {
@@ -189,9 +191,10 @@ class Auth {
         { password: passwordHash }
       )
       const url = `${CLIENT_URL}/`
-      const subject = 'Reset Your Password'
+      const subjectMail = 'Reset Your Password'
       const message = resetPassMail(url)
-      sendMail(req.user.email, subject, message)
+      sendMail({ to: req.user.email, subject: subjectMail, text: message })
+
       res.json({ success: "Your password has been reset successfully. Please Check Email..." })
     } catch (err) {
       res.json({ error: err.message })
