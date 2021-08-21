@@ -36,14 +36,14 @@ const AllCategory = (props) => {
   }
   return (
     <Fragment>
-      <div className="col-span-1 overflow-auto bg-white shadow-lg p-4">
+      <div className="col-span-1 overflow-auto bg-white shadow-lg p-4" style={{ height: '480px' }}>
         <table className="table-auto border w-full my-2">
           <thead>
             <tr>
               <th className="px-4 py-2 border">Products</th>
               <th className="px-4 py-2 border">Status</th>
               <th className="px-4 py-2 border">Total</th>
-              <th className="px-4 py-2 border">Transaction Id</th>
+              <th className="px-4 py-2 border">Order Id</th>
               <th className="px-4 py-2 border">Customer</th>
               <th className="px-4 py-2 border">Email</th>
               <th className="px-4 py-2 border">Phone</th>
@@ -139,7 +139,7 @@ const CategoryTable = ({ order, editOrder }) => {
           ₹{order.amount}.00
         </td>
         <td className="hover:bg-gray-200 p-2 text-center">
-          {order.transactionId}
+          {order._id}
         </td>
         <td className="hover:bg-gray-200 p-2 text-center">{order.user.name}</td>
         <td className="hover:bg-gray-200 p-2 text-center">

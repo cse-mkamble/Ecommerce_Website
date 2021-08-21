@@ -1,4 +1,8 @@
 const orderModel = require("../models/orders");
+const productModel = require("../models/products");
+const userModel = require("../models/users")
+const sendMail = require("../utils/sendMail");
+const orderMail = require("../utils/mail/orderMail");
 
 class Order {
   async getAllOrders(req, res) {
@@ -37,14 +41,12 @@ class Order {
   }
 
   async postCreateOrder(req, res) {
-    // let { allProduct, user, amount, transactionId, address, phone } = req.body;
+
     let { allProduct, user, amount, address, phone } = req.body;
-    let transactionId = 10
     if (
       !allProduct ||
       !user ||
       !amount ||
-      !transactionId ||
       !address ||
       !phone
     ) {
@@ -55,18 +57,71 @@ class Order {
           allProduct,
           user,
           amount,
-          transactionId,
           address,
           phone,
         });
-        let save = await newOrder.save();
-        if (save) {
+        let result = await newOrder.save();
+        if (result) {
+          // console.log(result)
+          var keys = Object.keys(result.allProduct)
+          var orderListMessage = ""
+          for (var i = 0; i < keys.length; i++) {
+            var value = result.allProduct[i].id;
+            let ProductObj = await productModel.findById(value)
+            orderListMessage = orderListMessage + `
+              <tr>
+                  <td style=" border: 1px solid black; " >${i}]</td>
+                  <td style=" border: 1px solid black; " >
+                      <table>
+                          <tr>
+                              <td><img src="${ProductObj.pImages[0].url}" alt="" style=" width: 60px; " /></td>
+                              <td><p>${ProductObj.pName}</p></td>
+                          </tr>    
+                      </table>
+                  </td>
+                  <td style=" border: 1px solid black; " >${result.allProduct[i].quantitiy}</td>
+              </tr>
+            `
+          }
+
+          const user = await userModel.findOne({ _id: result.user })
+          var senderStatus = 'Your'
+          var subjectMail = `${senderStatus} Order`
+          var dateNow = result.createdAt.toLocaleString()
+          var message = orderMail({
+            sender_status: senderStatus,
+            order_list: orderListMessage,
+            order_id: result._id,
+            order_status: result.status,
+            order_amount: result.amount,
+            order_address: result.address,
+            order_phone: result.phone,
+            order_date: dateNow
+          })
+          sendMail({ to: user.email, subject: subjectMail, text: message })
+
+          senderStatus = 'Customer'
+          subjectMail = `${senderStatus} Order`
+          message = ``
+          message = orderMail({
+            sender_status: senderStatus,
+            order_list: orderListMessage,
+            order_id: result._id,
+            order_status: result.status,
+            order_amount: result.amount,
+            order_address: result.address,
+            order_phone: result.phone,
+            order_date: dateNow
+          })
+          sendMail({ to: process.env.EMAIL_FROM, subject: subjectMail, text: message })
+
           return res.json({ success: "Order created successfully" });
         }
       } catch (err) {
-        return res.json({ error: error });
+        return res.json({ error: err });
       }
     }
+
   }
 
   async postUpdateOrder(req, res) {

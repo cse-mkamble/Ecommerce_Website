@@ -17,7 +17,7 @@ const TableHeader = () => {
           <th className="px-4 py-2 border">Total</th>
           <th className="px-4 py-2 border">Phone</th>
           <th className="px-4 py-2 border">Address</th>
-          <th className="px-4 py-2 border">Transaction Id</th>
+          <th className="px-4 py-2 border">Order Id</th>
           <th className="px-4 py-2 border">Checkout</th>
           <th className="px-4 py-2 border">Processing</th>
           <th className="px-4 py-2 border">Action</th>
@@ -79,7 +79,7 @@ const TableBody = ({ order, dispatch }) => {
         <td className="hover:bg-gray-200 p-2 text-center">{order.phone}</td>
         <td className="hover:bg-gray-200 p-2 text-center">{order.address}</td>
         <td className="hover:bg-gray-200 p-2 text-center">
-          {order.transactionId}
+          {order._id}
         </td>
         <td className="hover:bg-gray-200 p-2 text-center">
           {moment(order.createdAt).format("lll")}
