@@ -70,8 +70,8 @@ class Order {
             let ProductObj = await productModel.findById(value)
             orderListMessage = orderListMessage + `
               <tr>
-                  <td style=" border: 1px solid black; " >${i}]</td>
-                  <td style=" border: 1px solid black; " >
+                  <td style=" border: 1px solid #9e9e9e; " >${i}]</td>
+                  <td style=" border: 1px solid #9e9e9e; " >
                       <table>
                           <tr>
                               <td><img src="${ProductObj.pImages[0].url}" alt="" style=" width: 60px; " /></td>
@@ -79,7 +79,7 @@ class Order {
                           </tr>    
                       </table>
                   </td>
-                  <td style=" border: 1px solid black; " >${result.allProduct[i].quantitiy}</td>
+                  <td style=" border: 1px solid #9e9e9e; " >${result.allProduct[i].quantitiy}</td>
               </tr>
             `
           }
@@ -87,16 +87,26 @@ class Order {
           const user = await userModel.findOne({ _id: result.user })
           var senderStatus = 'Your'
           var subjectMail = `${senderStatus} Order`
-          var dateNow = result.createdAt.toLocaleString()
+          var orderStatusColor = 'red'
+          var orderDate = result.createdAt.toLocaleString()
+          var dateMessage = `
+              <tr>
+                  <td>Order Date</td>
+                  <td>:</td>
+                  <td>${orderDate}</td>
+              </tr>
+            `
+
           var message = orderMail({
             sender_status: senderStatus,
             order_list: orderListMessage,
             order_id: result._id,
             order_status: result.status,
+            order_status_color: orderStatusColor,
             order_amount: result.amount,
             order_address: result.address,
             order_phone: result.phone,
-            order_date: dateNow
+            order_date: dateMessage
           })
           sendMail({ to: user.email, subject: subjectMail, text: message })
 
@@ -108,10 +118,11 @@ class Order {
             order_list: orderListMessage,
             order_id: result._id,
             order_status: result.status,
+            order_status_color: orderStatusColor,
             order_amount: result.amount,
             order_address: result.address,
             order_phone: result.phone,
-            order_date: dateNow
+            order_date: dateMessage
           })
           sendMail({ to: process.env.EMAIL_FROM, subject: subjectMail, text: message })
 
@@ -129,14 +140,103 @@ class Order {
     if (!oId || !status) {
       return res.json({ message: "All filled must be required" });
     } else {
-      let currentOrder = orderModel.findByIdAndUpdate(oId, {
-        status: status,
-        updatedAt: Date.now(),
-      });
-      currentOrder.exec((err, result) => {
-        if (err) console.log(err);
-        return res.json({ success: "Order updated successfully" });
-      });
+      try {
+        let currentOrder = orderModel.findByIdAndUpdate(oId, {
+          status: status,
+          updatedAt: Date.now(),
+        });
+
+        currentOrder.exec(async (err, result) => {
+          if (err) console.log(err);
+          if (result) {
+
+            let Order = await orderModel.findOne({ _id: result._id })
+            console.log(Order)
+
+            var keys = Object.keys(Order.allProduct)
+            var orderListMessage = ""
+            for (var i = 0; i < keys.length; i++) {
+              var value = Order.allProduct[i].id;
+              let ProductObj = await productModel.findById(value)
+              orderListMessage = orderListMessage + `
+              <tr>
+                  <td style=" border: 1px solid #9e9e9e; " >${i}]</td>
+                  <td style=" border: 1px solid #9e9e9e; " >
+                      <table>
+                          <tr>
+                              <td><img src="${ProductObj.pImages[0].url}" alt="" style=" width: 60px; " /></td>
+                              <td><p>${ProductObj.pName}</p></td>
+                          </tr>    
+                      </table>
+                  </td>
+                  <td style=" border: 1px solid #9e9e9e; " >${Order.allProduct[i].quantitiy}</td>
+              </tr>
+            `
+            }
+
+            const user = await userModel.findOne({ _id: Order.user })
+            var senderStatus = 'Your'
+            var subjectMail = `${senderStatus} Order`
+            var orderStatusColor = ''
+            if (Order.status === 'Processing') {
+              orderStatusColor = '#d69e2e'
+            } else if (Order.status === 'Shipped') {
+              orderStatusColor = '#3182ce'
+            } else if (Order.status === 'Delivered') {
+              orderStatusColor = '#38a169'
+            } else {
+              orderStatusColor = 'red'
+            }
+            var orderDate = Order.createdAt.toLocaleString()
+            var orderUpdateDate = Order.updatedAt.toLocaleString()
+            var dateMessage = `
+              <tr>
+                  <td>Order Date</td>
+                  <td>:</td>
+                  <td>${orderDate}</td>
+              </tr>
+              <tr>
+                  <td>Order Update</td>
+                  <td>:</td>
+                  <td>${orderUpdateDate}</td>
+              </tr>
+            `
+            var message = orderMail({
+              sender_status: senderStatus,
+              order_list: orderListMessage,
+              order_id: Order._id,
+              order_status: Order.status,
+              order_status_color: orderStatusColor,
+              order_amount: Order.amount,
+              order_address: Order.address,
+              order_phone: Order.phone,
+              order_date: dateMessage
+            })
+            sendMail({ to: user.email, subject: subjectMail, text: message })
+
+            senderStatus = 'Customer'
+            subjectMail = `${senderStatus} Order`
+            message = ``
+            message = orderMail({
+              sender_status: senderStatus,
+              order_list: orderListMessage,
+              order_id: Order._id,
+              order_status: Order.status,
+              order_status_color: orderStatusColor,
+              order_amount: Order.amount,
+              order_address: Order.address,
+              order_phone: Order.phone,
+              order_date: dateMessage
+            })
+            sendMail({ to: process.env.EMAIL_FROM, subject: subjectMail, text: message })
+
+            return res.json({ success: "Order updated successfully" });
+          }
+        })
+
+      } catch (err) {
+        return res.json({ error: err });
+      }
     }
   }
 

@@ -19,11 +19,11 @@ const orderMail = (options) => {
                         <h3>Product Details :</h3>
                         <div align="center">
                             <div>
-                                <table style=" width: 100%; border: 1px solid black;  ">
+                                <table style=" width: 100%; border: 1px solid #9e9e9e;  ">
                                     <thead>
-                                        <th style=" border: 1px solid black; " ></th>
-                                        <th style=" border: 1px solid black; " >Product Name</th>
-                                        <th style=" border: 1px solid black; " >Quantitiy</th>
+                                        <th style=" border: 1px solid #9e9e9e; " ></th>
+                                        <th style=" border: 1px solid #9e9e9e; " >Product Name</th>
+                                        <th style=" border: 1px solid #9e9e9e; " >Quantitiy</th>
                                     </thead>
                                     <tbody style=" text-align: center; ">${options.order_list}</tbody>
                                 </table>
@@ -40,7 +40,7 @@ const orderMail = (options) => {
                                 <tr>
                                     <td>Order Status</td>
                                     <td>:</td>
-                                    <td>${options.order_status}</td>
+                                    <td style=" font-weight: 600; --text-opacity: 1; color: ${options.order_status_color}; ">${options.order_status}</td>
                                 </tr>
                                 <tr>
                                     <td>Total Amount</td>
@@ -57,11 +57,7 @@ const orderMail = (options) => {
                                     <td>:</td>
                                     <td>${options.order_phone}</td>
                                 </tr>
-                                <tr>
-                                    <td>Order Date</td>
-                                    <td>:</td>
-                                    <td>${options.order_date}</td>
-                                </tr>
+                                ${options.order_date}
                             </table>
                         </div>
                         <br />
